@@ -46,6 +46,7 @@ class SuperMarioBrosEnv(NESEnv):
             None
 
         """
+        print("Immortal Mario")
         # decode the ROM path based on mode and lost levels flag
         rom = rom_path(lost_levels, rom_mode)
         # initialize the super object with the ROM path
