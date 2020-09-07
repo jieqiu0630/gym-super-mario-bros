@@ -315,9 +315,14 @@ class SuperMarioBrosEnv(NESEnv):
     def _kill_mario(self):
         """Skip a death animation by forcing Mario to death."""
         # force Mario's state to dead
-        self.ram[0x000e] = 0x06
+        # self.ram[0x000e] = 0x06
+
         # step forward one frame
-        self._frame_advance(0)
+        # self._frame_advance(0)
+
+        ### Modified version
+        # force Mario to be alive
+        self.ram[0x000e] = 0x08
 
     # MARK: Reward Function
 
