@@ -65,6 +65,12 @@ class SuperMarioBrosEnv(NESEnv):
         # create a backup state to restore from on subsequent calls to reset
         self._backup()
 
+    def step(self, action):
+        screen, reward, done, info = super(SuperMarioBrosEnv, self).step(action)
+        if self._x_position % 0x100 == 0 and reward >= 0:
+            self._backup()
+        return screen, reward, done, info
+
     @property
     def is_single_stage_env(self):
         """Return True if this environment is a stage environment."""
@@ -316,14 +322,15 @@ class SuperMarioBrosEnv(NESEnv):
     def _kill_mario(self):
         """Skip a death animation by forcing Mario to death."""
         # force Mario's state to dead
-        # self.ram[0x000e] = 0x06
+        self.ram[0x000e] = 0x06
 
         # step forward one frame
-        # self._frame_advance(0)
+        self._frame_advance(0)
 
         ### Modified version
-        # force Mario to be alive
-        self.ram[0x000e] = 0x08
+        self._restore()
+
+
 
     # MARK: Reward Function
 
@@ -389,6 +396,7 @@ class SuperMarioBrosEnv(NESEnv):
         # if mario is dying, then cut to the chase and kill hi,
         if self._is_dying:
             self._kill_mario()
+            self._restore()
         # skip world change scenes (must call before other skip methods)
         if not self.is_single_stage_env:
             self._skip_end_of_world()
